@@ -1,0 +1,2448 @@
+
+/* ========================================
+   VICKSTACK — SECTION 1
+   GLOBAL DESIGN & HEADER
+======================================== */
+
+/* 1. Global reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: #f5f8ff;
+  color: #172554;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* 2. Main application */
+.store {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f8ff;
+  color: #172554;
+}
+
+/* 3. Store header */
+.store-header {
+  width: 100%;
+  min-height: 115px;
+  padding: 22px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5edff;
+  box-shadow: 0 3px 15px rgba(37, 99, 235, 0.05);
+}
+
+/* Brand */
+.store-brand {
+  flex-shrink: 0;
+}
+
+.store-brand h1 {
+  color: #172554;
+  font-size: 30px;
+  font-weight: 850;
+  letter-spacing: -1.5px;
+  line-height: 1.2;
+}
+
+.store-brand h1 span {
+  color: #2563eb;
+}
+
+.store-brand p {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* Header tagline and navigation */
+.store-tagline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.store-tagline > span {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.store-tagline > p {
+  margin-top: 2px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 13px;
+}
+
+/* Navigation buttons */
+.cart-counter,
+.auth-nav-button {
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 1px solid #dbe7ff;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 650;
+  transition: background 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease, transform 0.2s ease;
+}
+
+.cart-counter:hover,
+.auth-nav-button:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+.register-nav-button {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.register-nav-button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff;
+}
+
+/* 4. General button interaction */
+button:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.3);
+  outline-offset: 3px;
+}
+
+/* 5. Tablet and mobile header */
+@media (max-width: 768px) {
+  .store-header {
+    min-height: auto;
+    padding: 20px 4%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .store-brand h1 {
+    font-size: 27px;
+  }
+
+  .store-tagline {
+    width: 100%;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+}
+
+ 
+@media (max-width: 480px) {
+  .store-header {
+    padding: 17px 4%;
+  }
+
+  .store-brand h1 {
+    font-size: 25px;
+  }
+
+  .store-tagline > p {
+    font-size: 13px;
+  }
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .header-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 9px 5px;
+    font-size: 12px;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+
+
+
+
+
+/* ========================================
+   VICKSTACK — SECTION 2
+   PRODUCT LISTINGS & PRODUCT CARDS
+======================================== */
+
+/* Products section */
+.products-section,
+.marketplace-products {
+  width: 100%;
+  padding: 35px 5%;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.section-heading h2 {
+  color: #172554;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.product-count {
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* Product grid */
+.products-grid,
+.marketplace-products .products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* Product card */
+.product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5edff;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.12);
+}
+
+/* Product image container */
+
+/* Product image container */
+.product-card__image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 240px;
+  padding: 15px;
+
+  overflow: hidden;
+  background: #f0f5ff;
+}
+
+/* Product image */
+.product-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-card__image {
+  transform: scale(1.05);
+}
+
+/* Product information */
+.product-card__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 16px;
+  gap: 8px;
+}
+
+.product-card__category {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.product-card__content h3,
+.product-card__content h2 {
+  color: #172554;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.product-card__description {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Product prices */
+.product-card__price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+  color: #1d4ed8;
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.product-card__price del {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Product buttons */
+.product-card__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 750;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.product-card__button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Marketplace product layout */
+.marketplace-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 28px;
+  width: 100%;
+  padding: 30px 5%;
+}
+
+.marketplace-products {
+  min-width: 0;
+  padding: 0;
+}
+
+/* Tablet */
+@media (max-width: 1000px) {
+  .products-grid,
+  .marketplace-products .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .marketplace-layout {
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .product-card__image-container {
+    height: 210px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .products-section,
+  .marketplace-products {
+    padding: 24px 4%;
+  }
+
+  .marketplace-layout {
+    display: block;
+    padding: 20px 4%;
+  }
+
+  .products-grid,
+  .marketplace-products .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .product-card {
+    border-radius: 11px;
+  }
+
+  .product-card__image-container {
+    height: 165px;
+    padding: 10px;
+  }
+
+  .product-card__content {
+    padding: 11px;
+    gap: 6px;
+  }
+
+  .product-card__content h3,
+  .product-card__content h2 {
+    font-size: 13px;
+  }
+
+  .product-card__description {
+    font-size: 11px;
+  }
+
+  .product-card__price {
+    font-size: 14px;
+  }
+
+  .product-card__price del {
+    font-size: 10px;
+  }
+
+  .product-card__button {
+    min-height: 38px;
+    padding: 8px 5px;
+    font-size: 11px;
+  }
+
+  .section-heading h2 {
+    font-size: 21px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .products-grid,
+  .marketplace-products .products-grid {
+    gap: 8px;
+  }
+
+  .product-card__image-container {
+    height: 145px;
+  }
+
+  .product-card__content {
+    padding: 9px;
+  }
+}
+
+
+/* ========================================
+   VICKSTACK — SECTION 3
+   MARKETPLACE NAVIGATION & FILTERS
+======================================== */
+
+/* Search */
+.product-search {
+  width: 100%;
+  max-width: 520px;
+  margin-bottom: 22px;
+}
+
+.product-search input {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 16px;
+  border: 1px solid #dbe7ff;
+  border-radius: 10px;
+  outline: none;
+  background: #ffffff;
+  color: #172554;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-search input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.product-search input::placeholder {
+  color: #94a3b8;
+}
+
+/* Category filters */
+.category-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.category-button {
+  min-height: 38px;
+  padding: 8px 16px;
+  border: 1px solid #dbe7ff;
+  border-radius: 30px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 650;
+  transition: all 0.2s ease;
+}
+
+.category-button:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+/* Sorting */
+.sorting-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.sorting-section select {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #dbe7ff;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #172554;
+  outline: none;
+}
+
+/* Category sidebar */
+.category-sidebar {
+  align-self: start;
+  padding: 20px;
+  border: 1px solid #e5edff;
+  border-radius: 13px;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.04);
+}
+
+.category-sidebar h2,
+.category-sidebar h3 {
+  margin-bottom: 16px;
+  color: #172554;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.sidebar-category {
+  display: block;
+  width: 100%;
+  margin-bottom: 7px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #475569;
+  text-align: left;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-category:hover {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 35px 0;
+}
+
+.pagination-button,
+.pagination-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #dbe7ff;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 650;
+  transition: all 0.2s ease;
+}
+
+.pagination-button:hover,
+.pagination-number:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.pagination-button:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+/* Mobile marketplace controls */
+@media (max-width: 650px) {
+  .product-search {
+    max-width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .category-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .category-button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .sorting-section {
+    align-items: stretch;
+  }
+
+  .sorting-section select {
+    width: 100%;
+  }
+
+  .category-sidebar {
+    margin-bottom: 20px;
+    padding: 15px;
+  }
+
+  .pagination {
+    gap: 5px;
+    margin: 25px 0;
+  }
+
+  .pagination-button,
+  .pagination-number {
+    min-width: 34px;
+    min-height: 34px;
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+}
+
+
+/* ========================================
+   VICKSTACK — SECTION 4
+   HERO BANNER & PROMOTIONS
+======================================== */
+.hero-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+
+  width: 100vw;
+  max-width: 100vw;
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: calc(50% - 50vw);
+
+  min-height: 350px;
+  padding: 45px 6%;
+
+  overflow: hidden;
+  border-radius: 0;
+
+  background: linear-gradient(120deg, #1d4ed8, #3b82f6);
+  color: #ffffff;
+}
+
+.hero-banner-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  max-width: 520px;
+}
+
+.hero-banner-content > span {
+  display: inline-block;
+  margin-bottom: 15px;
+  padding: 7px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.13);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.hero-banner-content h1,
+.hero-banner-content h2 {
+  margin-bottom: 15px;
+  color: #ffffff;
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 850;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+}
+
+.hero-banner-content p {
+  max-width: 440px;
+  margin-bottom: 22px;
+  color: #eaf2ff;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.hero-banner-content button {
+  min-height: 46px;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 800;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.hero-banner-content button:hover {
+  transform: translateY(-2px);
+  background: #eff6ff;
+}
+
+/* Hero image */
+.hero-banner-image {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: 420px;
+  height: 270px;
+}
+
+.hero-banner-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Hero benefits */
+.hero-benefits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 90%;
+  margin: 25px auto 35px;
+}
+
+.hero-benefits > div {
+  padding: 18px;
+  border: 1px solid #e5edff;
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.hero-benefits h3 {
+  margin-bottom: 5px;
+  color: #1d4ed8;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.hero-benefits p {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Promotional sections */
+.flash-sales-section,
+.promotion-section {
+  width: 90%;
+  margin: 30px auto;
+  padding: 25px;
+  border: 1px solid #dbe7ff;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.flash-sales-section h2,
+.promotion-section h2 {
+  margin-bottom: 15px;
+  color: #172554;
+  font-size: 23px;
+  font-weight: 850;
+}
+
+/* Tablet */
+@media (max-width: 850px) {
+  .hero-banner {
+    min-height: 300px;
+    padding: 35px 5%;
+    gap: 15px;
+  }
+
+  .hero-banner-image {
+    height: 230px;
+  }
+}
+
+/* Mobile */
+.hero-banner {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-height: auto;
+  margin: 20px 0;
+  padding: 28px 22px;
+  gap: 20px;
+  border-radius: 0;
+}
+
+  .hero-banner-content {
+    width: 100%;
+  }
+
+  .hero-banner-content h1,
+  .hero-banner-content h2 {
+    font-size: 31px;
+  }
+
+  .hero-banner-content p {
+    font-size: 13px;
+  }
+
+  .hero-banner-image {
+    width: 100%;
+    max-width: 100%;
+    height: 190px;
+  }
+
+  .hero-benefits {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 92%;
+    margin: 20px auto;
+  }
+
+  .hero-benefits > div {
+    padding: 14px;
+  }
+
+  .flash-sales-section,
+  .promotion-section {
+    width: 92%;
+    padding: 17px;
+  }
+
+  .flash-sales-section h2,
+  .promotion-section h2 {
+    font-size: 20px;
+  }
+
+
+
+/* ========================================
+   VICKSTACK — SECTION 5
+   PRODUCT DETAILS PAGE
+======================================== */
+
+.product-details {
+  width: 90%;
+  max-width: 1250px;
+  margin: 30px auto;
+}
+
+.details-back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-bottom: 22px;
+  padding: 9px 16px;
+  border: 1px solid #dbe7ff;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.details-back-button:hover {
+  background: #eff6ff;
+}
+
+/* Main layout */
+.product-details-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: start;
+  gap: 45px;
+  padding: 25px;
+  border: 1px solid #e5edff;
+  border-radius: 17px;
+  background: #ffffff;
+}
+
+/* Gallery */
+.product-details-gallery {
+  min-width: 0;
+}
+
+.product-details-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 440px;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: 13px;
+  background: #f0f5ff;
+}
+
+.product-details-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Thumbnails */
+.product-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.product-thumbnail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 75px;
+  height: 75px;
+  padding: 5px;
+  overflow: hidden;
+  border: 2px solid #dbe7ff;
+  border-radius: 9px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.product-thumbnail:hover,
+.product-thumbnail.active {
+  border-color: #2563eb;
+}
+
+.product-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Product information */
+.product-details-info {
+  min-width: 0;
+  padding: 10px 0;
+}
+
+.product-details-info h1,
+.product-details-info h2 {
+  margin-bottom: 15px;
+  color: #172554;
+  font-size: 30px;
+  font-weight: 850;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.product-details-description {
+  margin: 18px 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.product-details-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+  color: #1d4ed8;
+  font-size: 27px;
+  font-weight: 850;
+}
+
+.product-details-price del {
+  color: #94a3b8;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Details buttons */
+.product-details-info button {
+  min-height: 44px;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.product-details-info button:hover {
+  background: #1d4ed8;
+}
+
+/* Related products and recently viewed */
+.recently-viewed-section {
+  width: 90%;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.recently-viewed-section h2 {
+  margin-bottom: 20px;
+  color: #172554;
+  font-size: 23px;
+  font-weight: 850;
+}
+
+/* Tablet */
+@media (max-width: 850px) {
+  .product-details-layout {
+    gap: 25px;
+    padding: 18px;
+  }
+
+  .product-details-image {
+    height: 350px;
+  }
+
+  .product-details-info h1,
+  .product-details-info h2 {
+    font-size: 25px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .product-details {
+    width: 92%;
+    margin: 20px auto;
+  }
+
+  .product-details-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 13px;
+    border-radius: 13px;
+  }
+
+  .product-details-image {
+    height: 290px;
+    padding: 15px;
+  }
+
+  .product-thumbnails {
+    gap: 9px;
+  }
+
+  .product-thumbnail {
+    width: 62px;
+    height: 62px;
+  }
+
+  .product-details-info {
+    padding: 5px 2px;
+  }
+
+  .product-details-info h1,
+  .product-details-info h2 {
+    font-size: 23px;
+  }
+
+  .product-details-description {
+    font-size: 13px;
+  }
+
+  .product-details-price {
+    font-size: 23px;
+  }
+
+  .recently-viewed-section {
+    width: 92%;
+    margin: 25px auto;
+    padding: 15px;
+  }
+
+  .recently-viewed-section h2 {
+    font-size: 20px;
+  }
+}
+
+
+/* ========================================
+   VICKSTACK — SECTION 6
+   CART & CHECKOUT
+======================================== */
+
+/* CART PAGE */
+.cart-section {
+  width: 90%;
+  max-width: 1200px;
+  margin: 35px auto;
+  padding: 25px;
+  border: 1px solid #e5edff;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.cart-section h1,
+.cart-section h2 {
+  margin-bottom: 20px;
+  color: #172554;
+  font-weight: 850;
+}
+
+/* Individual cart item */
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e5edff;
+}
+
+.cart-product {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 15px;
+}
+
+.cart-product img {
+  width: 95px;
+  height: 95px;
+  flex-shrink: 0;
+  padding: 7px;
+  border-radius: 10px;
+  background: #f0f5ff;
+  object-fit: contain;
+}
+
+.cart-product h3 {
+  color: #172554;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.cart-product p {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* Cart totals */
+.cart-total {
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #172554;
+}
+
+.cart-total h3,
+.cart-total p {
+  margin-bottom: 10px;
+}
+
+.cart-total strong {
+  color: #1d4ed8;
+}
+
+/* CHECKOUT PAGE */
+.checkout-page {
+  width: 90%;
+  max-width: 1200px;
+  margin: 35px auto;
+}
+
+.checkout-page h1 {
+  margin-bottom: 25px;
+  color: #172554;
+  font-size: 28px;
+  font-weight: 850;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  align-items: start;
+  gap: 25px;
+}
+
+/* Checkout form */
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 25px;
+  border: 1px solid #e5edff;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.checkout-form h2 {
+  margin-bottom: 5px;
+  color: #172554;
+  font-size: 20px;
+}
+
+.checkout-form label {
+  display: block;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.checkout-form input,
+.checkout-form textarea,
+.checkout-form select {
+  width: 100%;
+  min-height: 45px;
+  margin-top: 7px;
+  padding: 11px 13px;
+  border: 1px solid #dbe7ff;
+  border-radius: 8px;
+  outline: none;
+  background: #ffffff;
+  color: #172554;
+}
+
+.checkout-form input:focus,
+.checkout-form textarea:focus,
+.checkout-form select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Checkout summary */
+.checkout-summary {
+  padding: 22px;
+  border: 1px solid #e5edff;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.checkout-summary h2 {
+  margin-bottom: 18px;
+  color: #172554;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.checkout-product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5edff;
+}
+
+.checkout-product img {
+  width: 65px;
+  height: 65px;
+  flex-shrink: 0;
+  padding: 5px;
+  border-radius: 8px;
+  background: #f0f5ff;
+  object-fit: contain;
+}
+
+.checkout-product p {
+  color: #475569;
+  font-size: 13px;
+}
+
+/* Checkout submit button */
+.checkout-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 47px;
+  margin-top: 18px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  transition: background 0.2s ease;
+}
+
+.checkout-submit:hover {
+  background: #1d4ed8;
+}
+
+/* Checkout success */
+.checkout-success {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 35px 25px;
+  border: 1px solid #bbf7d0;
+  border-radius: 15px;
+  background: #f0fdf4;
+  text-align: center;
+}
+
+.checkout-success h2 {
+  margin-bottom: 12px;
+  color: #166534;
+  font-size: 25px;
+}
+
+.checkout-success p {
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* TABLET */
+@media (max-width: 850px) {
+  .checkout-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* MOBILE */
+@media (max-width: 650px) {
+  .cart-section,
+  .checkout-page {
+    width: 92%;
+    margin: 22px auto;
+  }
+
+  .cart-section {
+    padding: 15px;
+  }
+
+  .cart-item {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cart-product img {
+    width: 75px;
+    height: 75px;
+  }
+
+  .cart-product h3 {
+    font-size: 13px;
+  }
+
+  .cart-total {
+    padding: 15px;
+  }
+
+  .checkout-page h1 {
+    font-size: 23px;
+  }
+
+  .checkout-form,
+  .checkout-summary {
+    padding: 17px;
+  }
+
+  .checkout-success {
+    width: 92%;
+    margin: 30px auto;
+    padding: 25px 17px;
+  }
+}
+
+
+/* ========================================
+   VICKSTACK — SECTION 7
+   LOGIN & REGISTRATION
+======================================== */
+
+/* Authentication page */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 65vh;
+  padding: 40px 20px;
+}
+
+/* Authentication card */
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 35px;
+  border: 1px solid #e5edff;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 12px 35px rgba(37, 99, 235, 0.08);
+}
+
+/* Heading */
+.auth-heading {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.auth-heading h1,
+.auth-heading h2 {
+  margin-bottom: 8px;
+  color: #172554;
+  font-size: 27px;
+  font-weight: 850;
+}
+
+.auth-heading p {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Authentication form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.auth-field label {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.auth-field input {
+  width: 100%;
+  min-height: 47px;
+  padding: 12px 14px;
+  border: 1px solid #dbe7ff;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #172554;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-field input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.auth-field input::placeholder {
+  color: #94a3b8;
+}
+
+/* Password wrapper */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-wrapper input {
+  padding-right: 75px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  padding: 5px 8px;
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Submit button */
+.auth-submit {
+  width: 100%;
+  min-height: 47px;
+  margin-top: 5px;
+  padding: 12px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  transition: background 0.2s ease;
+}
+
+.auth-submit:hover {
+  background: #1d4ed8;
+}
+
+/* Error messages */
+.auth-error {
+  padding: 11px 13px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Switch between login and registration */
+.auth-switch {
+  margin-top: 22px;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+}
+
+.auth-switch button {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 800;
+}
+
+.auth-switch button:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .store-header {
+    padding: 17px 4%;
+  }
+
+  .store-brand h1 {
+    font-size: 25px;
+  }
+
+  .store-tagline > p {
+    font-size: 13px;
+  }
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .header-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 9px 5px;
+    font-size: 12px;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+
+
+/* ========================================
+   VICKSTACK — SECTION 8
+   ADMIN DASHBOARD
+======================================== */
+
+.admin-dashboard {
+  width: 90%;
+  max-width: 1250px;
+  margin: 35px auto;
+  padding: 25px;
+  border: 1px solid #e5edff;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.admin-dashboard h1,
+.admin-dashboard h2 {
+  margin-bottom: 20px;
+  color: #172554;
+  font-weight: 850;
+}
+
+.admin-dashboard h1 {
+  font-size: 28px;
+}
+
+.admin-dashboard h2 {
+  font-size: 21px;
+}
+
+/* Product and order sections */
+.admin-products,
+.admin-orders {
+  margin-top: 30px;
+}
+
+.admin-products {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* Admin product card */
+.admin-product-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid #e5edff;
+  border-radius: 12px;
+  background: #f8faff;
+}
+
+.admin-product-card img,
+.admin-product-image {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  padding: 5px;
+  border-radius: 9px;
+  background: #ffffff;
+  object-fit: contain;
+}
+
+.admin-product-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-product-info h3 {
+  margin-bottom: 6px;
+  color: #172554;
+  font-size: 15px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.admin-product-info p {
+  margin-bottom: 5px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Featured label */
+.admin-featured-label {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* Add product form */
+.admin-add-product-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px solid #dbe7ff;
+  border-radius: 12px;
+  background: #f8faff;
+}
+
+.admin-add-product-form h2 {
+  grid-column: 1 / -1;
+}
+
+.admin-add-product-form input,
+.admin-add-product-form textarea,
+.admin-add-product-form select {
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 12px;
+  border: 1px solid #dbe7ff;
+  border-radius: 8px;
+  outline: none;
+  background: #ffffff;
+  color: #172554;
+}
+
+.admin-add-product-form input:focus,
+.admin-add-product-form textarea:focus,
+.admin-add-product-form select:focus {
+  border-color: #2563eb;
+}
+
+.admin-add-product-form button {
+  min-height: 44px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.admin-add-product-form button:hover {
+  background: #1d4ed8;
+}
+
+/* Admin order card */
+.admin-order-card {
+  margin-bottom: 15px;
+  padding: 18px;
+  border: 1px solid #e5edff;
+  border-radius: 12px;
+  background: #f8faff;
+}
+
+.admin-order-card h3 {
+  margin-bottom: 10px;
+  color: #172554;
+  font-size: 16px;
+}
+
+.admin-order-card p {
+  margin-bottom: 7px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.admin-order-image {
+  width: 65px;
+  height: 65px;
+  padding: 5px;
+  border-radius: 8px;
+  background: #ffffff;
+  object-fit: contain;
+}
+
+/* Admin messages */
+.admin-success {
+  margin: 15px 0;
+  padding: 12px 15px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 13px;
+}
+
+.admin-error {
+  margin: 15px 0;
+  padding: 12px 15px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+/* Tablet */
+@media (max-width: 850px) {
+  .admin-products {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard {
+    width: 94%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .admin-dashboard {
+    width: 94%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .admin-dashboard h1 {
+    font-size: 23px;
+  }
+
+  .admin-dashboard h2 {
+    font-size: 18px;
+  }
+
+  .admin-product-card {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px;
+  }
+
+  .admin-product-card img,
+  .admin-product-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .admin-product-info h3 {
+    font-size: 13px;
+  }
+
+  .admin-add-product-form {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .admin-add-product-form h2 {
+    grid-column: auto;
+  }
+
+  .admin-order-card {
+    padding: 13px;
+  }
+}
+
+
+/* ========================================
+   VICKSTACK — SECTION 9
+   MY ORDERS & ORDER TRACKING
+======================================== */
+
+/* My Orders page */
+.my-orders-page {
+  width: 90%;
+  max-width: 1150px;
+  margin: 35px auto;
+  padding: 25px;
+  border: 1px solid #e5edff;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.my-orders-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.my-orders-heading h1 {
+  color: #172554;
+  font-size: 27px;
+  font-weight: 850;
+}
+
+/* Orders list */
+.my-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.my-order-card {
+  padding: 20px;
+  border: 1px solid #e5edff;
+  border-radius: 12px;
+  background: #f8faff;
+}
+
+.my-order-header,
+.my-order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.my-order-header {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5edff;
+}
+
+.my-order-header h3 {
+  color: #172554;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.my-order-header p {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Order status */
+.my-order-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 30px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+/* Order items */
+.my-order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 0;
+}
+
+.my-order-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.my-order-item img {
+  width: 65px;
+  height: 65px;
+  flex-shrink: 0;
+  padding: 5px;
+  border-radius: 8px;
+  background: #ffffff;
+  object-fit: contain;
+}
+
+.my-order-item h4 {
+  color: #172554;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.my-order-item p {
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Order total */
+.my-order-total {
+  color: #1d4ed8;
+  font-size: 17px;
+  font-weight: 850;
+}
+
+/* Empty orders and errors */
+.empty-orders {
+  padding: 35px 20px;
+  border: 1px dashed #bfdbfe;
+  border-radius: 12px;
+  color: #64748b;
+  text-align: center;
+  font-size: 14px;
+}
+
+.order-error {
+  margin: 15px 0;
+  padding: 12px 15px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+/* Order tracking */
+.order-tracking {
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px solid #e5edff;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.order-tracking h3 {
+  margin-bottom: 22px;
+  color: #172554;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* Tracking progress */
+.tracking-steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.tracking-step {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+
+.tracking-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 9px;
+  border: 2px solid #bfdbfe;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.tracking-step.completed .tracking-circle,
+.tracking-step.active .tracking-circle {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.tracking-step p {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+/* Cancelled orders */
+.cancelled-order-message {
+  margin-top: 15px;
+  padding: 13px;
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+/* Mobile */
+.hero-banner {
+  flex-direction: column;
+  align-items: flex-start;
+
+  width: 100vw;
+  max-width: 100vw;
+
+  margin: 15px 0 20px;
+  margin-left: calc(50% - 50vw);
+
+  min-height: auto;
+  padding: 28px 22px;
+
+  gap: 20px;
+  border-radius: 0;
+}
+
+
+/* ========================================
+   VICKSTACK — SECTION 10
+   FOOTER & FINAL RESPONSIVE POLISH
+======================================== */
+
+/* Footer */
+.store-footer {
+  width: 100%;
+  margin-top: 50px;
+  padding: 25px 5%;
+  background: #eaf2ff;
+  border-top: 1px solid #dbeafe;
+  text-align: center;
+}
+
+.store-footer p {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* General image protection */
+img {
+  max-width: 100%;
+}
+
+/* Smooth interaction */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.3);
+  outline-offset: 3px;
+}
+
+/* Prevent horizontal overflow */
+.store {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Mobile footer */
+@media (max-width: 650px) {
+  .store-footer {
+    margin-top: 35px;
+    padding: 22px 15px;
+  }
+
+  .store-footer p {
+    font-size: 12px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .store-footer {
+    padding: 18px 10px;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+.product-card__image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  width: 100%;
+  height: 240px;
+  padding: 16px;
+
+  overflow: hidden;
+  background: #f0f5ff;
+}
+
+.product-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-card__image {
+  transform: scale(1.05);
+}
+
+
+/* =================================
+   FULL-WIDTH PRODUCT GALLERY
+================================= */
+
+.marketplace-layout {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.marketplace-products {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+
+
+/* Product grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Product cards */
+.product-card {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Product image container */
+.product-card__image-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Product images */
+.product-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Tablet */
+@media (max-width: 1000px) {
+  .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .product-card__image-container {
+    height: 150px;
+  }
+}
+
+
+/* FIX FLASH SALES IMAGE SIZE */
+.flash-sales-section img {
+  width: 100%;
+  max-width: 100%;
+  height: 180px;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 650px) {
+  .flash-sales-section img {
+    height: 130px;
+  }
+}
+
+
+/* FLASH SALES LAYOUT */
+.flash-sales-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 15px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.flash-sales-grid .product-card {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.flash-sales-grid .product-card__image-container {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.flash-sales-grid .product-card__image {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 1000px) {
+  .flash-sales-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .flash-sales-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .flash-sales-grid .product-card__image-container {
+    height: 120px;
+  }
+}
+
+
+/* HERO BANNER - PROFESSIONAL DESKTOP SIZE */
+@media (min-width: 651px) {
+  .hero-banner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 92%;
+    max-width: 1200px;
+    min-height: 320px;
+    margin: 30px auto;
+    padding: 35px 5%;
+    gap: 30px;
+    border-radius: 18px;
+  }
+
+  .hero-banner-content {
+    width: 55%;
+  }
+
+  .hero-banner-image {
+    width: 42%;
+    max-width: 450px;
+    height: 260px;
+  }
+}
+
+/* HERO BANNER - FULL WIDTH MOBILE */
+@media (max-width: 650px) {
+  .hero-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100vw;
+    max-width: 100vw;
+    margin: 20px 0 20px calc(50% - 50vw);
+    padding: 25px 20px;
+    min-height: auto;
+    gap: 18px;
+    border-radius: 0;
+  }
+
+  .hero-banner-content {
+    width: 100%;
+  }
+
+  .hero-banner-image {
+    width: 100%;
+    max-width: 100%;
+    height: 190px;
+  }
+}
