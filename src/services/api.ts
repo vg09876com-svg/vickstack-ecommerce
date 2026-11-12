@@ -1,10 +1,10 @@
 
 import axios from "axios";
 
-// Automatically use the computer's network address
-// so the API works on both PC and mobile.
 const API = axios.create({
-  baseURL: `http://${window.location.hostname}:5000/api`,
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    `http://${window.location.hostname}:5000/api`,
   headers: {
     "Content-Type": "application/json",
   },
