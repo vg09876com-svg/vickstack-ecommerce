@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import ProductList from "./components/ProductList";
 import Cart from "./pages/Cart";
@@ -14,6 +13,7 @@ import "./App.css";
 type Page =
   | "home"
   | "cart"
+  | "wishlist"
   | "checkout"
   | "login"
   | "register"
@@ -73,15 +73,11 @@ function App() {
 
   // Track public website visits.
   useEffect(() => {
-    // Wait until authentication has been checked.
     if (checkingAuth || page === "admin") {
       return;
     }
 
-    // Get or create an anonymous visitor ID.
-    let visitorId = localStorage.getItem(
-      "vickstack_visitor_id"
-    );
+    let visitorId = localStorage.getItem("vickstack_visitor_id");
 
     if (!visitorId) {
       visitorId =
@@ -89,13 +85,9 @@ function App() {
           ? crypto.randomUUID()
           : `visitor-${Date.now()}-${Math.random()}`;
 
-      localStorage.setItem(
-        "vickstack_visitor_id",
-        visitorId
-      );
+      localStorage.setItem("vickstack_visitor_id", visitorId);
     }
 
-    // Record the page visit in the backend.
     API.post("/visits", {
       visitorId,
       page,
@@ -157,82 +149,88 @@ function App() {
 
   return (
     <main className="store">
-
       {/* HEADER */}
       <header className="store-header">
-        <div className="store-brand">
+        <div
+          className="store-brand"
+          onClick={() => setPage("home")}
+          style={{ cursor: "pointer" }}
+        >
           <h1>
             VICKSTACK<span>.</span>
           </h1>
           <p>Upgrade your everyday.</p>
         </div>
 
-        <div className="store-tagline">
-          <span>NEW COLLECTION</span>
-          <p>Find your next favourite.</p>
+        <div className="header-actions">
+          {/* MY WISHLIST BUTTON */}
+          <button
+            type="button"
+            className="auth-nav-button"
+            onClick={() => setPage("wishlist")}
+          >
+            {"\u2661"} My Wishlist
+          </button>
 
-          <div className="header-actions">
+          {/* CART BUTTON */}
+          <button
+            type="button"
+            className="cart-counter"
+            onClick={() => setPage("cart")}
+          >
+            {"\uD83D\uDED2"} Cart ({cartCount})
+          </button>
 
+          {/* MY ORDERS BUTTON */}
+          {user && (
             <button
               type="button"
-              className="cart-counter"
-              onClick={() => setPage("cart")}
+              className="auth-nav-button"
+              onClick={() => setPage("orders")}
             >
-              🛒 Cart ({cartCount})
+              My Orders
             </button>
+          )}
 
-            {/* MY ORDERS BUTTON */}
-            {user && (
+          {/* ADMIN DASHBOARD BUTTON */}
+          {user?.role === "admin" && (
+            <button
+              type="button"
+              className="auth-nav-button"
+              onClick={() => setPage("admin")}
+            >
+              Admin Dashboard
+            </button>
+          )}
+
+          {/* LOGIN AND LOGOUT BUTTONS */}
+          {user ? (
+            <button
+              type="button"
+              className="auth-nav-button"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          ) : (
+            <>
               <button
                 type="button"
                 className="auth-nav-button"
-                onClick={() => setPage("orders")}
+                onClick={() => setPage("login")}
               >
-                My Orders
+                Login
               </button>
-            )}
 
-            {/* ADMIN DASHBOARD BUTTON */}
-            {user?.role === "admin" && (
               <button
                 type="button"
-                className="auth-nav-button"
-                onClick={() => setPage("admin")}
+                className="auth-nav-button register-nav-button"
+                onClick={() => setPage("register")}
               >
-                Admin Dashboard
+                Sign Up
               </button>
-            )}
-
-            {/* LOGIN AND LOGOUT BUTTONS */}
-            {user ? (
-              <button
-                type="button"
-                className="auth-nav-button"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className="auth-nav-button"
-                  onClick={() => setPage("login")}
-                >
-                  Login
-                </button>
-
-                <button
-                  type="button"
-                  className="auth-nav-button register-nav-button"
-                  onClick={() => setPage("register")}
-                >
-                  Sign Up
-                </button>
-              </>
-            )}
-
-          </div>
+            </>
+          )}
         </div>
       </header>
 
@@ -251,7 +249,6 @@ function App() {
         <Checkout onBack={() => setPage("cart")} />
       ) : page === "cart" ? (
         <section className="cart-section">
-
           <button
             type="button"
             className="product-card__button"
@@ -270,12 +267,16 @@ function App() {
           >
             Proceed to Checkout →
           </button>
-
         </section>
+      ) : page === "wishlist" ? (
+        <ProductList
+          key="wishlist-view"
+          defaultShowWishlist={true}
+          onBackToHome={() => setPage("home")}
+        />
       ) : page === "admin" ? (
         user?.role === "admin" ? (
           <section>
-
             <button
               type="button"
               className="product-card__button"
@@ -285,7 +286,6 @@ function App() {
             </button>
 
             <AdminDashboard />
-
           </section>
         ) : (
           <p>Access denied. Admin privileges required.</p>
@@ -297,14 +297,13 @@ function App() {
           <p>Please log in to view your orders.</p>
         )
       ) : (
-        <ProductList />
+        <ProductList key="home-view" defaultShowWishlist={false} />
       )}
 
       {/* FOOTER */}
       <footer className="store-footer">
         <p>© 2026 VICKSTACK. All rights reserved.</p>
       </footer>
-
     </main>
   );
 }

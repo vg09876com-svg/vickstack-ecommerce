@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import type { Product } from "../types/Product";
 import { useCart } from "../context/CartContext";
@@ -65,18 +64,22 @@ function ProductCard({
           loading="lazy"
           onError={handleImageError}
         />
+      </div>
 
-        {discount > 0 && (
-          <span className="discount-badge">
-            -{discount}%
-          </span>
-        )}
+      <div className="product-card__header-row">
+        <div className="product-card__badges">
+          {discount > 0 && (
+            <span className="discount-badge">
+              -{discount}%
+            </span>
+          )}
 
-        {isOutOfStock && (
-          <span className="stock-badge">
-            Out of Stock
-          </span>
-        )}
+          {isOutOfStock && (
+            <span className="stock-badge">
+              Out of Stock
+            </span>
+          )}
+        </div>
 
         {onToggleWishlist && (
           <button

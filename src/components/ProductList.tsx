@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 import ProductCard from "./ProductCard";
@@ -13,28 +12,40 @@ interface BackendProduct extends Omit<Product, "id"> {
   _id: string;
 }
 
-function ProductList() {
+interface ProductListProps {
+  defaultShowWishlist?: boolean;
+  onBackToHome?: () => void;
+}
+
+function ProductList({
+  defaultShowWishlist = false,
+  onBackToHome,
+}: ProductListProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("default");
-  const [selectedProduct, setSelectedProduct] =
-    useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  const [wishlist, setWishlist] = useState<Product[]>([]);
-  const [showWishlist, setShowWishlist] = useState(false);
+  const [wishlist, setWishlist] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem("vickstack_wishlist");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [showWishlist, setShowWishlist] = useState(defaultShowWishlist);
 
   const [recentlyViewed, setRecentlyViewed] = useState<Product[]>(() => {
     try {
-      const savedProducts = localStorage.getItem(
-        "vickstack_recently_viewed"
-      );
-
+      const savedProducts = localStorage.getItem("vickstack_recently_viewed");
       return savedProducts ? JSON.parse(savedProducts) : [];
     } catch {
       return [];
@@ -62,8 +73,7 @@ function ProductList() {
         setRecentlyViewed((previousProducts) =>
           previousProducts.filter((savedProduct) =>
             fetchedProducts.some(
-              (product) =>
-                String(product.id) === String(savedProduct.id)
+              (product) => String(product.id) === String(savedProduct.id)
             )
           )
         );
@@ -78,6 +88,11 @@ function ProductList() {
     fetchProducts();
   }, []);
 
+  // Save wishlist to localStorage
+  useEffect(() => {
+    localStorage.setItem("vickstack_wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
+
   // Save recently viewed products
   useEffect(() => {
     localStorage.setItem(
@@ -86,7 +101,7 @@ function ProductList() {
     );
   }, [recentlyViewed]);
 
-  // Wishlist
+  // Wishlist toggle
   const handleToggleWishlist = (product: Product) => {
     setWishlist((previousWishlist) => {
       const alreadySaved = previousWishlist.some(
@@ -94,9 +109,7 @@ function ProductList() {
       );
 
       if (alreadySaved) {
-        return previousWishlist.filter(
-          (item) => item.id !== product.id
-        );
+        return previousWishlist.filter((item) => item.id !== product.id);
       }
 
       return [...previousWishlist, product];
@@ -108,9 +121,7 @@ function ProductList() {
     setRecentlyViewed((previousProducts) => {
       const updatedProducts = [
         product,
-        ...previousProducts.filter(
-          (item) => item.id !== product.id
-        ),
+        ...previousProducts.filter((item) => item.id !== product.id),
       ];
 
       return updatedProducts.slice(0, 8);
@@ -136,13 +147,10 @@ function ProductList() {
     switch (sortOption) {
       case "low-to-high":
         return a.price - b.price;
-
       case "high-to-low":
         return b.price - a.price;
-
       case "name":
         return a.name.localeCompare(b.name);
-
       default:
         return 0;
     }
@@ -156,13 +164,9 @@ function ProductList() {
     : sortedProducts;
 
   // Pagination
-  const totalPages = Math.ceil(
-    displayedProducts.length / productsPerPage
-  );
-
+  const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct =
-    indexOfLastProduct - productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
 
   const currentProducts = displayedProducts.slice(
     indexOfFirstProduct,
@@ -171,7 +175,6 @@ function ProductList() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-
     document
       .getElementById("marketplace-products")
       ?.scrollIntoView({ behavior: "smooth" });
@@ -189,65 +192,64 @@ function ProductList() {
   }
 
   return (
-    <section
-      className="products-section"
-      id="marketplace-products"
-    >
-      <HeroBanner />
+    <section className="products-section" id="marketplace-products">
+      {/* Only show Hero, Flash Sales, and Recently Viewed on the main Home view */}
+      {!showWishlist && (
+        <>
+          <HeroBanner />
 
-      <FlashSales
-        products={products}
-        onViewDetails={handleViewProduct}
-        wishlist={wishlist}
-        onToggleWishlist={handleToggleWishlist}
-      />
+          <FlashSales
+            products={products}
+            onViewDetails={handleViewProduct}
+            wishlist={wishlist}
+            onToggleWishlist={handleToggleWishlist}
+          />
 
-      {/* Recently Viewed */}
-      {recentlyViewed.length > 0 && (
-        <section className="recently-viewed-section">
-          <div className="section-heading">
-            <h2>Recently Viewed</h2>
-            <p>Pick up where you left off.</p>
-          </div>
+          {recentlyViewed.length > 0 && (
+            <section className="recently-viewed-section">
+              <div className="section-heading">
+                <h2>Recently Viewed</h2>
+                <p>Pick up where you left off.</p>
+              </div>
 
-          <div className="products-grid">
-            {recentlyViewed.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onViewDetails={handleViewProduct}
-                isWishlisted={wishlist.some(
-                  (item) => item.id === product.id
-                )}
-                onToggleWishlist={handleToggleWishlist}
-              />
-            ))}
-          </div>
-        </section>
+              <div className="products-grid">
+                {recentlyViewed.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onViewDetails={handleViewProduct}
+                    isWishlisted={wishlist.some(
+                      (item) => item.id === product.id
+                    )}
+                    onToggleWishlist={handleToggleWishlist}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </>
       )}
 
-      {/* Product Heading */}
-      <div className="section-heading">
-        <h2>Discover Our Products</h2>
-        <p>Shop your favorite products at amazing prices.</p>
-      </div>
-
-      {/* Wishlist */}
-      <div className="wishlist-toolbar">
+      {/* Back to Store button when opened from Navbar Wishlist */}
+      {showWishlist && onBackToHome && (
         <button
           type="button"
-          className={
-            showWishlist
-              ? "wishlist-view-button active"
-              : "wishlist-view-button"
-          }
-          onClick={() => {
-            setShowWishlist(!showWishlist);
-            setCurrentPage(1);
-          }}
+          className="product-card__button"
+          onClick={onBackToHome}
+          style={{ marginBottom: "1rem", maxWidth: "220px" }}
         >
-          ♥ My Wishlist ({wishlist.length})
+          {"\u2190"} Back to Store
         </button>
+      )}
+
+      {/* Product Heading with id for scroll */}
+      <div id="products-gallery" className="section-heading">
+        <h2>{showWishlist ? "My Wishlist" : "Discover Our Products"}</h2>
+        <p>
+          {showWishlist
+            ? `You have ${wishlist.length} saved item(s).`
+            : "Shop your favorite products at amazing prices."}
+        </p>
       </div>
 
       {/* Search */}
@@ -266,19 +268,13 @@ function ProductList() {
       {/* Full-width marketplace */}
       <div className="marketplace-layout">
         <div className="marketplace-products">
-
           {/* Sorting */}
           <div className="sorting-section">
             <p>
               Showing{" "}
-              {displayedProducts.length > 0
-                ? indexOfFirstProduct + 1
-                : 0}
+              {displayedProducts.length > 0 ? indexOfFirstProduct + 1 : 0}
               {" - "}
-              {Math.min(
-                indexOfLastProduct,
-                displayedProducts.length
-              )}
+              {Math.min(indexOfLastProduct, displayedProducts.length)}
               {" of "}
               {displayedProducts.length} products
             </p>
@@ -295,12 +291,8 @@ function ProductList() {
                 }}
               >
                 <option value="default">Recommended</option>
-                <option value="low-to-high">
-                  Price: Low to High
-                </option>
-                <option value="high-to-low">
-                  Price: High to Low
-                </option>
+                <option value="low-to-high">Price: Low to High</option>
+                <option value="high-to-low">Price: High to Low</option>
                 <option value="name">Name: A to Z</option>
               </select>
             </div>
@@ -354,7 +346,11 @@ function ProductList() {
                 <button
                   type="button"
                   onClick={() => {
-                    setShowWishlist(false);
+                    if (onBackToHome) {
+                      onBackToHome();
+                    } else {
+                      setShowWishlist(false);
+                    }
                     setSearchTerm("");
                     setSortOption("default");
                     setCurrentPage(1);
@@ -375,26 +371,25 @@ function ProductList() {
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
-                ← Previous
+                {"\u2190"} Previous
               </button>
 
-              {Array.from(
-                { length: totalPages },
-                (_, index) => index + 1
-              ).map((page) => (
-                <button
-                  key={page}
-                  type="button"
-                  className={
-                    currentPage === page
-                      ? "pagination-number active"
-                      : "pagination-number"
-                  }
-                  onClick={() => handlePageChange(page)}
-                >
-                  {page}
-                </button>
-              ))}
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    className={
+                      currentPage === page
+                        ? "pagination-number active"
+                        : "pagination-number"
+                    }
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
 
               <button
                 type="button"
@@ -402,7 +397,7 @@ function ProductList() {
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
               >
-                Next →
+                Next {"\u2192"}
               </button>
             </div>
           )}
