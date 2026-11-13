@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import type { Product } from "../types/Product";
 import { useCart } from "../context/CartContext";
@@ -61,7 +62,10 @@ function ProductCard({
           src={imageSrc}
           alt={product.name}
           className="product-card__image"
+          width={600}
+          height={600}
           loading="lazy"
+          decoding="async"
           onError={handleImageError}
         />
       </div>
