@@ -1250,3 +1250,31 @@
   object-fit: contain !important;
   flex-shrink: 0;
 }
+
+/* CHECKOUT PRODUCT IMAGE FIX */
+.checkout-product {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 0;
+}
+
+.checkout-product img {
+  width: 85px !important;
+  height: 85px !important;
+  min-width: 85px !important;
+  max-width: 85px !important;
+  min-height: 85px !important;
+  max-height: 85px !important;
+  object-fit: contain !important;
+  display: block;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #f5f8ff;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.checkout-product > div {
+  min-width: 0;
+}
