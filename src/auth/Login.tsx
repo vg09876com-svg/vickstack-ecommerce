@@ -10,20 +10,17 @@ interface LoginProps {
 function Login({ onLoginSuccess, onSwitchToRegister }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validate form fields
     if (!email.trim() || !password.trim()) {
       setError("Please fill in all fields.");
       return;
     }
 
-    // Validate email format
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       setError("Please enter a valid email address.");
       return;
@@ -33,22 +30,18 @@ function Login({ onLoginSuccess, onSwitchToRegister }: LoginProps) {
       setError("");
       setLoading(true);
 
-      // Send login details to the backend
       const response = await API.post("/auth/login", {
         email: email.trim(),
         password,
       });
 
-      // Save authentication token
       localStorage.setItem("vickstack_token", response.data.token);
 
-      // Save logged-in user information
       localStorage.setItem(
         "vickstack_user",
         JSON.stringify(response.data.user)
       );
 
-      // Notify App that login succeeded
       onLoginSuccess();
     } catch (err: unknown) {
       if (
@@ -99,24 +92,15 @@ function Login({ onLoginSuccess, onSwitchToRegister }: LoginProps) {
 
           <div className="auth-field">
             <label htmlFor="login-password">Password</label>
-
             <div className="password-wrapper">
               <input
                 id="login-password"
-                type={showPassword ? "text" : "password"}
+                type="password"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
             </div>
           </div>
 
