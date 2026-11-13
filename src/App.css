@@ -1355,3 +1355,43 @@
     padding: 20px;
   }
 }
+/* MOBILE LOGIN FORM IMPROVEMENTS */
+@media (max-width: 600px) {
+  .auth-page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 25px 16px;
+    box-sizing: border-box;
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 30px 22px;
+    box-sizing: border-box;
+    border-radius: 16px;
+  }
+
+  .auth-card h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .auth-card input {
+    width: 100%;
+    min-height: 54px;
+    font-size: 16px;
+    padding: 14px;
+    box-sizing: border-box;
+  }
+
+  .auth-card button {
+    width: 100%;
+    min-height: 54px;
+    font-size: 17px;
+  }
+
+  .auth-card label {
+    font-size: 15px;
+  }
+}
