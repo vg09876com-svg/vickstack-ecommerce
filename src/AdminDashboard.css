@@ -422,16 +422,16 @@
   background: #fff;
   border-radius: 9px;
 }
-
 .admin-order-item img {
   width: 65px;
   height: 65px;
-  flex-shrink: 0;
+  min-width: 65px;
   object-fit: contain;
-  border: 1px solid #e5eaf5;
-  border-radius: 7px;
+  border-radius: 10px;
+  background: #f5f8ff;
+  padding: 5px;
+  box-sizing: border-box;
 }
-
 .admin-order-item p {
   margin-bottom: 4px;
   font-size: 13px;
