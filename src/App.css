@@ -1238,3 +1238,15 @@
     text-align: right;
   }
 }
+
+/* Force cart images to stay within their size */
+.cart-item img.cart-item__image {
+  width: 110px !important;
+  height: 110px !important;
+  min-width: 110px !important;
+  max-width: 110px !important;
+  min-height: 110px !important;
+  max-height: 110px !important;
+  object-fit: contain !important;
+  flex-shrink: 0;
+}
